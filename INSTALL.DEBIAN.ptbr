@@ -1,0 +1,79 @@
+Guia de Instalação do Firewall Admin (Debian)
+
+Autor: Alexandre Novaes Iosimura <alexandre.novaes@pop.com.br>
+Distribuição utilizada: DEBIAN- kernel 2.4
+
+1. Requisitos necessários:
+    * Apache com suporte ao PHP 4 
+    * iptables, iptables-save e iptables-restore
+    * programa sudo para rodar iptables do apache como root
+
+2. Configurando o sudo
+
+Execute:
+$ visudo 
+
+E insira as seguintes linhas :
+www-data        ALL=NOPASSWD:   /sbin/iptables
+www-data        ALL=NOPASSWD:   /sbin/iptables-save
+www-data        ALL=NOPASSWD:   /sbin/iptables-restore
+
+3. Baixar o pacote do firewall admin:
+
+Execute:
+$ wget http://ovh.dl.sourceforge.net/sourceforge/firewalladmin/firewalladmin-0.4.tar.gz
+
+Nota:
+    * Descompacte o arquivo tar.gz no diretório de páginas do apache, no debian em: /var/www/
+    * Mude a permissão de config.php para: chmod a+w config.php
+
+
+4. Configurado a autenticação para a página de administração do firewall utilizando o apache
+
+4.1. Vamos editar o seu arquivo httpd.conf adicionando as seguintes linhas nas seções  
+
+$ mcedit /etc/apache/httpd.conf
+
+ LoadModule e AddModule:
+ LoadModule auth_module     modules/mod_auth.so
+ AddModule mod_auth.c
+
+Nota: No debian talvez não seja necessário inserir estas linhas...
+
+4.2. Vamos configurar as opções do diretório que irá requerer autenticação:
+
+Editar o arquivo de configuracoes do apache
+$ mcedit /etc/apache/httpd.conf
+
+# Diretório Restrito
+<Directory /var/www/firewall>
+     Options Indexes FollowSymLinks Includes
+     AllowOverride AuthConfig
+
+     # Autenticação de Usuário
+     AuthName "Acesso ao meu Diretório Restrito"
+     AuthType Basic
+     AuthUserFile /etc/apache/htpasswd
+     require valid-user
+
+     Order allow,deny
+     Allow from all
+</Directory>
+
+4.3. Agora iremos criar o arquivo de senhas. Para criar o arquivo de senhas e/ou adicionar senha para um determinado usuário, digite o comando abaixo:
+
+$ htpasswd -c /etc/apache/httpd_passwd usuário
+
+Para acrescentar mais usuários digite:
+$ htpasswd /etc/apache/httpd_passwd usuário
+
+Aqui será necessário digitar a senha e em seguida confirmá-la.
+
+4.4. Pronto, basta somente reiniciar o servidor:
+
+$ apachectl restart
+
+Para executar as páginas digite em um navegador:
+
+http://ip_do_servidor/firewall/
+

@@ -1,0 +1,12 @@
+Firewall Admin 0.4 ChangeLog
+
+Vinicius M. de Souza <vinicius@opentech.inf.br>
+	= fixed userchains targets to support no targets (default: ACCEPT)
+	- ruleoptions directory	was removed (performance impact)
+	+ support for patch-o-matic modules comment and quota
+	+ support for native modules mport, time, string, dscp, ecn, pktype and connmark
+	+ support for native modules random
+	+ packages/bytes counter support
+	+ rename userchains
+	+ added support to mangle targets: MARK and DSCP
+	+ disabled notices in php
